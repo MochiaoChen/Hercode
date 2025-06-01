@@ -10,15 +10,10 @@
 #       end          —— 结束函数或代码块
 # -------------------------------------------------------------
 
-function test:
-    say "test"
-end
 
 function you_can_do_this:
-    test
-    say "Hello! Her World L"  
+    say "Hello! Her World !"  
     say "编程很美，也属于你！"  
-    test
 end
 
 # -------------------------------------------------------------
