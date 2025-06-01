@@ -56,18 +56,6 @@ Hello! Her World L
 
 ---
 
-## 📂 文件结构建议 | Suggested File Structure
-
-```
-your_project_folder/
-│
-├── hercode_runner.py         # HerCode解释器
-├── hello_world.txt           # HerCode 程序示例
-└── README.md                 # 项目说明文档
-```
-
----
-
 ## ✨ 特性 | Features
 
 - ✅ 支持 HerCode 自定义函数
