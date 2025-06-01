@@ -50,6 +50,8 @@ class HerCodeInterpreter:
             if line.startswith("say "):
                 content = line[len("say "):].strip()
                 print(content.strip('"'))
+            elif self.functions.get(line):
+                self.execute_function(line)
 
 
 def main():
