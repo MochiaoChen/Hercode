@@ -87,28 +87,37 @@ class HerCodeInterpreter:
             value_expression = " ".join(parts[3:])
             return ("let", var_name, "=", value_expression)
         elif keyword == "get":
+            # 支持宽松解析：get mood as "prompt"
             as_keyword_str = " as "
-            as_keyword_pos = line.find(as_keyword_str)
+            lowered_line = line.lower()
+            as_keyword_pos = lowered_line.find(as_keyword_str)
+            
             if as_keyword_pos == -1:
-                raise SyntaxError(f"Get statement missing 'as': {line}")
+                raise SyntaxError(f"Get statement missing 'as': {line} (Hint: use 'get mood as \"your prompt\"')")
+
             var_name_str = line[len("get "):as_keyword_pos].strip()
             if not var_name_str or " " in var_name_str:
-                 raise SyntaxError(f"Invalid variable name in get statement: '{var_name_str}' from line '{line}'")
+                raise SyntaxError(f"Invalid variable name in get statement: '{var_name_str}' from line '{line}'")
+
             prompt_string = line[as_keyword_pos + len(as_keyword_str):].strip()
-            if not prompt_string:
-                 raise SyntaxError(f"Missing prompt string in get statement: {line}")
+            
+            # 自动去除错误的双引号配对问题
+            if prompt_string.startswith('"') and not prompt_string.endswith('"'):
+                prompt_string += '"'
+            if prompt_string.endswith('"') and not prompt_string.startswith('"'):
+                prompt_string = '"' + prompt_string
+
+            # 检查是否完整包裹在引号中
+            if not (prompt_string.startswith('"') and prompt_string.endswith('"')):
+                raise SyntaxError(f"Prompt string must be wrapped in quotes: {prompt_string}")
+
             return ("get", var_name_str, "as", prompt_string)
-        elif keyword == "if" or keyword == "when":
-            condition = " ".join(parts[1:])
-            if not condition:
-                raise SyntaxError(f"Missing condition in {keyword} statement: {line}")
-            return (keyword, condition, [])
         elif keyword == "repeat":
             times_keyword_str = " times"
             times_keyword_pos = line.rfind(times_keyword_str)
             if times_keyword_pos == -1 or not (line.endswith(times_keyword_str) or line[times_keyword_pos + len(times_keyword_str):].strip().startswith(":")):
                 if line.strip().endswith("times:"):
-                     times_keyword_pos = line.rfind("times:")
+                    times_keyword_pos = line.rfind("times:")
                 else:
                     raise SyntaxError(f"Repeat statement missing 'times' keyword properly at the end: {line}")
             count_expression_str = line[len("repeat "):times_keyword_pos].strip()
@@ -145,11 +154,11 @@ class HerCodeInterpreter:
                 else:
                     duration_expression = " ".join(parts[1:])
             if not duration_expression:
-                 raise SyntaxError(f"Wait statement missing duration: {line}")
+                raise SyntaxError(f"Wait statement missing duration: {line}")
             return ("wait", duration_expression.strip(), unit_string)
         else:
             if len(parts) == 1 and not line.endswith(':'):
-                 return ("call", keyword)
+                return ("call", keyword)
             return ("unknown", line)
 
     def _parse_comma_separated_args(self, args_str):

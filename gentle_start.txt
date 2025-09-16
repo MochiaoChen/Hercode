@@ -1,0 +1,45 @@
+# gentle_start.txt  ── HerCode Script Demo
+# （注：缩进仅为阅读友好，解释器解析时不依赖空格）
+
+start:
+    say "🌞 Good morning, dear code traveler."
+    say "Take a deep breath... and let's begin."
+    get username as "Please tell me your name:"
+    say "Hello, " + username + ". Treat yourself kindly today."
+    repeat 2 times:
+        say "Deep breath, then start again."
+    end
+
+    say "Please type: happy / sad / anxious / calm (without quotes)"
+    get mood as "How do you feel now?"
+    let mood = mood + ""
+
+    call respond_mood
+end
+
+
+# ---------- functions ----------
+
+function ask_mood:
+    get mood as "How do you feel now? (happy / sad / anxious / calm)"
+end
+
+function respond_mood:
+    if mood == "happy":
+        say "That's wonderful! Keep smiling! ✨"
+    end
+    if mood == "sad":
+        say "It's okay to feel sad. I'm here with you. 🤗"
+    end
+    if mood == "anxious":
+        say "Let's breathe together. You're not alone."
+    end
+    if mood == "calm":
+        say "Peaceful moments are precious. Enjoy them."
+    end
+end
+
+function random_encouragement:
+    let phrase = random ["You can do it!", "Believe in yourself!", "Every day is a new beginning!"]
+    say phrase
+end
